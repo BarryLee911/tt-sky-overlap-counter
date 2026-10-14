@@ -50,3 +50,5 @@ The current design targets 80 MHz on SKY130 with 6x2 tiles. This exceeds the pub
 # External hardware
 
 A clock source, an 8-bit digital sample source, configuration drivers and a device to capture the result pins. Synchronize SAMPLE to the clock and release the shared configuration/TYPE pin before handoff.
+
+Suggested external ADCs are TI ADC3544 with parallel data adaptation, or ADI AD4052 with an external SPI bridge. See the [ADC interface guide](https://github.com/BarryLee911/tt-sky-overlap-counter/blob/main/docs/adc-interface.md) for UK suppliers and connection requirements. These are datasheet-based candidates; the external hardware has not yet been bench tested.

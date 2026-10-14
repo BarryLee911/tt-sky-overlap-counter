@@ -18,6 +18,12 @@ View the layout in the [3D viewer](https://barrylee911.github.io/tt-sky-overlap-
 
 Implementation: SKY130, 6x2 tiles, 80 MHz build target.
 
+## External ADC
+
+Suggested parts: **TI ADC3544** for a modern parallel sample source, or **ADI AD4052** for a recent low-power source with an external SPI bridge. Both need adaptation to the chip's unsigned 8-bit input.
+
+See the [ADC selection and interface guide](docs/adc-interface.md) for UK suppliers, specifications, voltage conversion and sample timing. These are datasheet-based candidates; the external hardware has not yet been bench tested.
+
 ## Build status
 
 See current [GDS, precheck, gate-level test and viewer](https://github.com/BarryLee911/tt-sky-overlap-counter/actions/workflows/gds.yaml), [RTL tests](https://github.com/BarryLee911/tt-sky-overlap-counter/actions/workflows/test.yaml), [documentation checks](https://github.com/BarryLee911/tt-sky-overlap-counter/actions/workflows/docs.yaml) and [cycle-equivalence checks](https://github.com/BarryLee911/tt-sky-overlap-counter/actions/workflows/equivalence.yaml) results. See [verification instructions](test/equivalence/README.md) for the check scope and local commands.
