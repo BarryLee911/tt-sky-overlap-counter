@@ -1,31 +1,58 @@
-# Overlap Count
+# Sign-Based Signal Demodulator
 
-Counts sign agreement between input samples and an internal reference, with amplitude tracking.
+A synchronous digital core for phase-sensitive signal demodulation, combining sign-agreement counting with approximate peak-magnitude tracking.
 
 [![gds](https://github.com/BarryLee911/tt-sky-overlap-counter/actions/workflows/gds.yaml/badge.svg)](https://github.com/BarryLee911/tt-sky-overlap-counter/actions/workflows/gds.yaml) [![docs](https://github.com/BarryLee911/tt-sky-overlap-counter/actions/workflows/docs.yaml/badge.svg)](https://github.com/BarryLee911/tt-sky-overlap-counter/actions/workflows/docs.yaml) [![test](https://github.com/BarryLee911/tt-sky-overlap-counter/actions/workflows/test.yaml/badge.svg)](https://github.com/BarryLee911/tt-sky-overlap-counter/actions/workflows/test.yaml) [![equivalence](https://github.com/BarryLee911/tt-sky-overlap-counter/actions/workflows/equivalence.yaml/badge.svg)](https://github.com/BarryLee911/tt-sky-overlap-counter/actions/workflows/equivalence.yaml)
 
-## Function
+The design accepts an unsigned 8-bit sample stream centered on code 128 and compares its sign with an internally generated square-wave reference. It exposes a phase-sensitive **COUNT** statistic and an approximate **MAGNITUDE** estimate. For a frequency-matched sinusoid, COUNT varies with relative phase; conversion to an angle depends on the phase convention and input conditions. The core outputs these two statistics, rather than a calibrated phase angle or a complete I/Q pair.
 
-- Accepts unsigned 8-bit samples centered on 128.
-- Counts sign agreement over a 2048-sample window and tracks an approximate peak magnitude over about 1024 samples.
-- Provides alternating count and magnitude results on an 11-bit output, with selectable sampling levels 0-23.
+## Design at a glance
 
-## Use
+| Property | Implementation |
+| --- | --- |
+| Digital input | Unsigned 8-bit SAMPLE; zero level at 128 |
+| COUNT | Sign agreements in a 2048-sample sliding window; saturated to 0–2047 |
+| MAGNITUDE | Approximate peak of `abs(SAMPLE − 128)` over about 1024 samples; 0–128 |
+| Sampling | LEVEL 0–23; one capture every `2^LEVEL` master clocks |
+| Reference | One square-wave period per 2048 captured samples |
+| Output | 11-bit data bus; TYPE alternates COUNT and MAGNITUDE every master clock |
+| Implementation target | Tiny Tapeout SKY26d, SKY130, 6×2 tiles; 80 MHz build target |
+| Evidence | RTL and gate-level regression, simulation-based cycle equivalence, and implementation reports; no silicon measurements reported |
 
-See the [pinout and operating instructions](docs/info.md) for reset, configuration, sampling and result capture. Results alternate every clock; read TYPE with each result.
+```mermaid
+flowchart LR
+    A[8-bit SAMPLE] --> B[Sign classification]
+    R[Internal square reference] --> C[Sign-agreement count]
+    B --> C
+    A --> D[Approximate peak tracking]
+    C --> E[11-bit output and TYPE]
+    D --> E
+```
 
-View the layout in the [3D viewer](https://barrylee911.github.io/tt-sky-overlap-counter/).
+## Reading and using the design
 
-Implementation: SKY130, 6x2 tiles, 80 MHz build target.
+- [Architecture and numerical interpretation](docs/architecture.md): definitions, reference frequency, phase convention and pipeline behavior.
+- [Pinout and operating instructions](docs/info.md): reset, configuration, pin handoff and output capture.
+- [Validation and reproducibility](docs/validation.md): fixed-revision build evidence, local waveform observations and commands for the repository tests.
+- [External ADC interface](docs/adc-interface.md): candidate parts and the required byte mapping, voltage translation and synchronization.
+- [Layout viewer](https://barrylee911.github.io/tt-sky-overlap-counter/): generated physical implementation.
 
-## External ADC
+Configure LEVEL after reset, release the shared LEVEL[0]/TYPE pin before its 80000-clock handoff, and read TYPE with every result. Reset is required to change LEVEL. Adjacent COUNT and MAGNITUDE words need not describe the same sample instant. An ADC, analog conditioning and sample synchronization are external to this core.
 
-Suggested parts: **TI ADC3544** for a modern parallel sample source, or **ADI AD4052** for a recent low-power source with an external SPI bridge. Both need adaptation to the chip's unsigned 8-bit input.
+## Validation status
 
-See the [ADC selection and interface guide](docs/adc-interface.md) for UK suppliers, specifications, voltage conversion and sample timing. These are datasheet-based candidates; the external hardware has not yet been bench tested.
+The [recorded build at `1f28d70`](https://github.com/BarryLee911/tt-sky-overlap-counter/tree/1f28d70b04c08c91fa98e1ee7355492fa2102d49) passed GDS, precheck, gate-level test, viewer, RTL test, documentation and cycle-equivalence jobs. The [validation record](docs/validation.md) links each run and separates these checks from the additional ideal-input waveform experiments.
 
-## Build status
+**80 MHz is an implementation target, not a demonstrated operating frequency.** The recorded build has a worst setup slack of −0.110671 ns and nonzero slew/fanout violations. Tiny Tapeout also specifies separate [GPIO frequency limits](https://tinytapeout.com/specs/gpio/). Passing CI does not establish all-corner timing closure, board-level performance or silicon operation.
 
-See current [GDS, precheck, gate-level test and viewer](https://github.com/BarryLee911/tt-sky-overlap-counter/actions/workflows/gds.yaml), [RTL tests](https://github.com/BarryLee911/tt-sky-overlap-counter/actions/workflows/test.yaml), [documentation checks](https://github.com/BarryLee911/tt-sky-overlap-counter/actions/workflows/docs.yaml) and [cycle-equivalence checks](https://github.com/BarryLee911/tt-sky-overlap-counter/actions/workflows/equivalence.yaml) results. See [verification instructions](test/equivalence/README.md) for the check scope and local commands.
+## Reuse and citation
 
-80 MHz is a build target and exceeds the published input-pad rating. Previous builds reported worst-corner setup slack of approximately -0.111 ns; assess current timing from the GDS artifacts. Operation on fabricated hardware has not been verified.
+The HDL and associated repository material are distributed under [Apache-2.0](LICENSE). Citation metadata is provided in [CITATION.cff](CITATION.cff), using the maintainer's public account name. When reporting results, cite the repository **and the exact commit used**, and retain the corresponding workflow/artifact identifiers. The mutable `main` branch alone does not identify a reproducible implementation.
+
+The current documented hardware source is `src/project.v`, SHA-256:
+
+```text
+279db397eecc4afd91e2f172e8bf21a465506f964cbf1438a8e865b14531323e
+```
+
+No publication DOI or silicon-measurement dataset is associated with this documentation yet.

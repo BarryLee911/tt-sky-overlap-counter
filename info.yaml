@@ -1,8 +1,8 @@
 project:
-  title: "Overlap Count"
+  title: "Sign-Based Signal Demodulator"
   author: "BarryLee911"
   discord: ""
-  description: "Counts sign agreement between input samples and an internal reference, with amplitude tracking."
+  description: "Sign-based signal demodulation with phase-sensitive counting and amplitude tracking."
   language: "Verilog"
   clock_hz: 80000000
   tiles: "6x2"

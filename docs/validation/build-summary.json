@@ -1,0 +1,126 @@
+{
+  "scope": "diagnostic only; not a submission or workflow acceptance decision",
+  "source_sha256": "279db397eecc4afd91e2f172e8bf21a465506f964cbf1438a8e865b14531323e",
+  "source_matches_lock": true,
+  "resolved_checker_settings": {
+    "TIMING_VIOLATION_CORNERS": [
+      "*tt*"
+    ],
+    "SETUP_VIOLATION_CORNERS": null,
+    "HOLD_VIOLATION_CORNERS": [
+      "*"
+    ],
+    "MAX_SLEW_VIOLATION_CORNERS": [
+      ""
+    ],
+    "MAX_CAP_VIOLATION_CORNERS": [
+      ""
+    ]
+  },
+  "checker_defaults_match": true,
+  "corners": [
+    {
+      "corner": "nom_tt_025C_1v80",
+      "setup_ns": 5.960618389801313,
+      "hold_ns": 0.31620451596550714,
+      "slew": 36.0,
+      "capacitance": 0.0,
+      "fanout": 162.0,
+      "strict_timing_target_met": true,
+      "strict_electrical_target_met": false
+    },
+    {
+      "corner": "nom_ss_100C_1v60",
+      "setup_ns": 0.20579982744913264,
+      "hold_ns": 0.8719247792793298,
+      "slew": 466.0,
+      "capacitance": 0.0,
+      "fanout": 162.0,
+      "strict_timing_target_met": true,
+      "strict_electrical_target_met": false
+    },
+    {
+      "corner": "nom_ff_n40C_1v95",
+      "setup_ns": 7.491533827552828,
+      "hold_ns": 0.11181511588674792,
+      "slew": 0.0,
+      "capacitance": 0.0,
+      "fanout": 162.0,
+      "strict_timing_target_met": true,
+      "strict_electrical_target_met": false
+    },
+    {
+      "corner": "min_tt_025C_1v80",
+      "setup_ns": 6.159536166570762,
+      "hold_ns": 0.3136002657429907,
+      "slew": 6.0,
+      "capacitance": 0.0,
+      "fanout": 162.0,
+      "strict_timing_target_met": true,
+      "strict_electrical_target_met": false
+    },
+    {
+      "corner": "min_ss_100C_1v60",
+      "setup_ns": 0.5736993265053876,
+      "hold_ns": 0.865221918600888,
+      "slew": 387.0,
+      "capacitance": 0.0,
+      "fanout": 162.0,
+      "strict_timing_target_met": true,
+      "strict_electrical_target_met": false
+    },
+    {
+      "corner": "min_ff_n40C_1v95",
+      "setup_ns": 7.567541474325148,
+      "hold_ns": 0.11022860713968904,
+      "slew": 0.0,
+      "capacitance": 0.0,
+      "fanout": 162.0,
+      "strict_timing_target_met": true,
+      "strict_electrical_target_met": false
+    },
+    {
+      "corner": "max_tt_025C_1v80",
+      "setup_ns": 5.787308129863679,
+      "hold_ns": 0.3210871659435969,
+      "slew": 69.0,
+      "capacitance": 0.0,
+      "fanout": 162.0,
+      "strict_timing_target_met": true,
+      "strict_electrical_target_met": false
+    },
+    {
+      "corner": "max_ss_100C_1v60",
+      "setup_ns": -0.11067147511673718,
+      "hold_ns": 0.8796210675483022,
+      "slew": 555.0,
+      "capacitance": 0.0,
+      "fanout": 162.0,
+      "strict_timing_target_met": false,
+      "strict_electrical_target_met": false
+    },
+    {
+      "corner": "max_ff_n40C_1v95",
+      "setup_ns": 7.429175263031271,
+      "hold_ns": 0.11375545272176178,
+      "slew": 0.0,
+      "capacitance": 0.0,
+      "fanout": 162.0,
+      "strict_timing_target_met": true,
+      "strict_electrical_target_met": false
+    }
+  ],
+  "physical": {
+    "magic__drc_error__count": 0.0,
+    "design__lvs_error__count": 0.0,
+    "route__drc_errors": 0.0,
+    "antenna__violating__nets": 0.0,
+    "antenna__violating__pins": 0.0
+  },
+  "stdcell_area_um2": 124984.0,
+  "stdcell_count": 12674.0,
+  "repository": "BarryLee911/tt-sky-overlap-counter",
+  "commit": "1f28d70b04c08c91fa98e1ee7355492fa2102d49",
+  "gds_run_url": "https://github.com/BarryLee911/tt-sky-overlap-counter/actions/runs/38596543490",
+  "extracted_on": "2026-10-15"
+}

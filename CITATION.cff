@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this HDL design or its documented results, cite this repository and the exact commit and workflow artifacts used."
+type: software
+title: "Sign-Based Signal Demodulator"
+authors:
+  - name: "BarryLee911"
+    website: "https://github.com/BarryLee911"
+repository-code: "https://github.com/BarryLee911/tt-sky-overlap-counter"
+url: "https://github.com/BarryLee911/tt-sky-overlap-counter"
+license: Apache-2.0
+abstract: "A synchronous digital core for phase-sensitive signal demodulation using sign-agreement counting and approximate peak-magnitude tracking."

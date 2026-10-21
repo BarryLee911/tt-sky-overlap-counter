@@ -1,6 +1,6 @@
 # External ADC options
 
-For the current Overlap Count interface, use **TI ADC3544** when a synchronous parallel source is the priority. **ADI AD4052** is a newer precision, low-power alternative when an external SPI bridge is available. Neither is a pin-for-pin connection to this chip. This guide is a datasheet-based selection, not a tested board design; no adapter PCB or controller firmware is included.
+For the current signal-demodulator interface, **TI ADC3544** is a candidate when a synchronous parallel source is the priority. **ADI AD4052** is a precision, low-power alternative when an external SPI bridge is available. Neither is a pin-for-pin connection to this chip. This guide is a datasheet-based selection, not a tested board design; no adapter PCB or controller firmware is included.
 
 ## Parts and UK availability
 
@@ -73,6 +73,8 @@ The chip captures every `2^LEVEL` clocks after configuration, with LEVEL 0-23. I
 Use a DC-capable input path for slow signals, with the ADC's required common mode, reference and input range. Adjust the input zero level to code 128. Band-limit before the chip's effective sampling rate `f_clk / 2^LEVEL`; selecting every nth sample is not an anti-alias filter. Preserve the configuration and TYPE handoff described in the [operating guide](info.md); ADC control belongs to the external controller, not to the chip's result pins.
 
 The existing RTL and gate-level tests exercise digital samples. They do not verify the ADC, analog input path, translator or adapter controller. Measure clipping, zero-code stability, timing and end-to-end latency before reporting board-level results.
+
+The [supplementary waveform observations](validation.md#supplementary-waveform-observations) use an ideal 14-bit quantizer followed by upper-byte extraction. This checks the selected numerical input model; it is not a device-level ADC3544 simulation and does not include conversion latency, DCLK or analog noise.
 
 ## Sources
 

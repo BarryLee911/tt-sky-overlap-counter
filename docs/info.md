@@ -1,10 +1,12 @@
 # How it works
 
-Counts sign agreement between input samples and an internal reference, with amplitude tracking.
+Sign-based signal demodulation with phase-sensitive counting and amplitude tracking.
 
 The input is an unsigned 8-bit sample centered on 128. Values below 128 have sign 0; values at or above 128 have sign 1. The internal square reference repeats every 2048 captured samples, with 1024 samples in each half-period.
 
 COUNT reports sign agreement over the most recent 2048 samples. Unfilled positions count as zero at startup, and the 11-bit result saturates at 2047. MAGNITUDE tracks the approximate peak of `abs(SAMPLE - 128)` over about 1024 samples, in the range 0-128. It is not an exact sliding maximum.
+
+For a frequency-matched sinusoid, COUNT is related to relative phase; it does not directly encode a signed phase angle or an I/Q pair. Quantization, offset and the reference phase convention affect its interpretation. See the [architecture description](https://github.com/BarryLee911/tt-sky-overlap-counter/blob/main/docs/architecture.md) for the numerical definitions.
 
 # How to test
 
@@ -28,7 +30,7 @@ COUNT reports sign agreement over the most recent 2048 samples. Unfilled positio
 3. Keep SAMPLE stable around each capture edge. The first sample is captured `2^LEVEL` clocks after the configuration edge; subsequent samples use the same interval. LEVEL 0 captures on every clock, starting on the next edge.
 4. Release external drive on `uio[0]` after configuration and before the 80000th clock after the configuration edge. At that edge the chip drives TYPE on this pin. At the 80 MHz build target this interval is 1 ms.
 
-The level remains latched until reset. Reset is required to change it. Sampling rate is `f_clk / 2^LEVEL`; window lengths are measured in captured samples rather than clocks.
+The level remains latched until reset. Reset is required to change it. Sampling rate is `f_clk / 2^LEVEL` and reference frequency is `f_clk / (2048 * 2^LEVEL)`; window lengths are measured in captured samples rather than clocks. The external sample source must be synchronized to this capture schedule. There is no data-ready input or backpressure.
 
 ## Reading results
 
@@ -45,7 +47,9 @@ A sample captured at edge N updates statistics at N+1 and can appear from N+2 in
 
 ## Build target
 
-The current design targets 80 MHz on SKY130 with 6x2 tiles. This exceeds the published input-pad rating. The verified hardware revision is `e28004b`; its worst-corner setup slack is approximately -0.111 ns. Passing the build and simulation checks does not establish reliable 80 MHz operation on fabricated hardware.
+The design targets 80 MHz on SKY130 with 6x2 tiles. In the recorded build at repository revision `1f28d70`, the worst setup slack was -0.110671 ns; slew and fanout violations were also reported. This is an implementation target, not a demonstrated operating frequency. It exceeds the input-pad rating in the [Tiny Tapeout GPIO specifications](https://tinytapeout.com/specs/gpio/), which also specify a separate output-frequency limit.
+
+See the [validation record](https://github.com/BarryLee911/tt-sky-overlap-counter/blob/main/docs/validation.md) for the exact build, test scope and reproduction commands. Passing CI does not establish all-corner timing closure or operation on fabricated hardware. No silicon measurements are reported.
 
 # External hardware
 
